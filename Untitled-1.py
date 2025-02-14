@@ -14,7 +14,7 @@ emitter_position = np.array([250, 250, 500])  # Center of the space
 antenna_position = np.array([100, 100, 100])  # Example position
 frequency_value = 2.4  # Frequency in GHz
 emitter_power = 100.0  # Power of the emitter
-resolution = 300  # Resolution of the 3D space
+resolution = 100  # Resolution of the 3D space
 
 def setup_3d_space(space_dim, resolution):
     print("Running setup_3d_space")
@@ -51,7 +51,7 @@ def add_antenna(ax, position, label):
     position (array-like): The (x, y, z) coordinates of the antenna.
     label (str): The label for the antenna.
     """
-    ax.scatter(position[0], position[1], position[2], color='b', s=resolution)
+    ax.scatter(position[0], position[1], position[2], color='b', s=100)
     print("Antenna added")
 
 def compute_antenna_signal_strength(emitter_position, antenna_position, frequency_value, emitter_power):
