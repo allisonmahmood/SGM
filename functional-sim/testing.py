@@ -70,13 +70,55 @@ def plot_emitter_and_antennas(emitter_position, antenna_positions, antenna_direc
     ax.legend()
     plt.show()
 
-def main():
-    # Define sample values
+def create_antenna_pair(base_position, distance, direction):
+    """
+    Creates a pair of antennas a set distance apart facing a specified direction with 45 degrees between them.
+    
+    Parameters:
+    base_position (array-like): The (x, y, z) coordinates of the base position.
+    distance (float): The distance between the two antennas.
+    direction (array-like): The (x, y, z) direction vector the antennas are facing.
+    
+    Returns:
+    antenna_positions (list): List of (x, y, z) coordinates of the antennas.
+    antenna_directions (list): List of (x, y, z) direction vectors for the antennas.
+    """
+    direction = np.array(direction) / np.linalg.norm(direction)
+    perpendicular_direction = np.cross(direction, [0, 0, 1])
+    if np.linalg.norm(perpendicular_direction) == 0:
+        perpendicular_direction = np.cross(direction, [0, 1, 0])
+    perpendicular_direction = perpendicular_direction / np.linalg.norm(perpendicular_direction)
+    
+    antenna_positions = [
+        base_position + (distance / 2) * perpendicular_direction,
+        base_position - (distance / 2) * perpendicular_direction
+    ]
+    
+    rotation_matrix = np.array([
+        [np.cos(np.pi / 4), -np.sin(np.pi / 4), 0],
+        [np.sin(np.pi / 4), np.cos(np.pi / 4), 0],
+        [0, 0, 1]
+    ])
+    
+    antenna_directions = [
+        np.dot(rotation_matrix, direction),
+        np.dot(rotation_matrix.T, direction)
+    ]
+    
+    return antenna_positions, antenna_directions
+
+def main(emitter_position=np.array([200, 450, 250]), antenna_positions=None, antenna_directions=None):
+    # Define default values if not provided
+    if antenna_positions is None or antenna_directions is None:
+        base_position = np.array([250, 250, 250])
+        distance = 20
+        direction = [1, 0, 0]
+        antenna_positions, antenna_directions = create_antenna_pair(base_position, distance, direction)
+
+    # Define other sample values
     space_dim = 500
     resolution = 50
-    emitters = [{"position": np.array([200, 450, 250]), "power": 100}]
-    antenna_positions = [np.array([240, 10, 250]), np.array([260, 10, 250]), np.array([180, 10, 200])]
-    antenna_directions = [np.array([-1, 1, 0]), np.array([1, 1, 0]), np.array([1, 1, 1])]  # Example directions
+    emitters = [{"position": emitter_position, "power": 100}]
     frequency_value = 2.4  # GHz
 
     # Initialize simulation
@@ -86,6 +128,7 @@ def main():
     visualize_all(space_dim, emitters, antenna_positions, field_strength, X, Y, Z)
 
     # Plot emitter and antennas in 3D
-    plot_emitter_and_antennas(emitters[0]["position"], antenna_positions, antenna_directions, antenna_strengths, space_dim)
+    plot_emitter_and_antennas(emitter_position, antenna_positions, antenna_directions, antenna_strengths, space_dim)
 
-main()
+
+main(emitter_position=[100,250,80])
