@@ -68,7 +68,7 @@ def bearing_from_power_db(P1_db, P2_db, Phi, psi_0):
     float or numpy.ndarray
         Bearing angle in radians
     """
-    return (psi_0 / (2 * 6.0202) * Phi * (P2_db - P1_db)) + Phi/2
+    return (  ((psi_0**2) / ((2 * 6.0202) * Phi) * (P2_db - P1_db)) ) + Phi/2
 
 def bearing_from_power_natural(P1, P2, Phi, psi_0):
     """
@@ -91,7 +91,7 @@ def bearing_from_power_natural(P1, P2, Phi, psi_0):
         Bearing angle in radians
     """
     A = calculate_A()
-    return (psi_0**2 / (2*A)) * Phi * (np.log(P2) - np.log(P1)) + Phi/2
+    return ((( (psi_0**2)/ ((2*A) * Phi)) * (np.log(P2) - np.log(P1))) + Phi/2)
 
 # Example usage
 def example_usage():
@@ -118,5 +118,5 @@ def example_usage():
     return phi_test, P1, P2, bearing_db, bearing_natural
 
 
-res = example_usage()
-print(res)
+#res = example_usage()
+#print(res)

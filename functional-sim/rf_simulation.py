@@ -34,6 +34,25 @@ def compute_rf_field_strength(emitters, X, Y, Z):
         field_strength += emitter["power"] / (distance + 1e-6)  # Avoid division by zero
     return field_strength
 
+    def compute_rf_field_strength_with_environment(emitters, environment):
+        # print("Running compute_rf_field_strength_with_environment")
+        """
+        Computes the RF field strength at each point in the 3D space using the environment.
+        
+        Parameters:
+        emitters (list): List of emitters with their positions and powers.
+        environment (tuple): The coordinates of the points in the 3D space (X, Y, Z).
+        
+        Returns:
+        field_strength (ndarray): The RF field strength at each point in the 3D space.
+        """
+        X, Y, Z = environment
+        field_strength = np.zeros_like(X)
+        for emitter in emitters:
+            distance = np.sqrt((X - emitter["position"][0])**2 + (Y - emitter["position"][1])**2 + (Z - emitter["position"][2])**2)
+            field_strength += emitter["power"] / (distance + 1e-6)  # Avoid division by zero
+        return field_strength
+
 def add_antenna(ax, position, label):
     # print("Running add_antenna")
     """

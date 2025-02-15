@@ -49,41 +49,44 @@ def directional_antenna(field_amplitude, emitter_position, antenna_position, ant
     
     return field_amplitude, received_signal
 
-def plot_antenna_pattern(antenna_direction, std_dev=0.5):
-    # print("Running plot_antenna_pattern")
+def plot_antenna_patterns(antenna_directions, std_dev=0.5):
+    # print("Running plot_antenna_patterns")
     """
-    Plots the 360-degree pickup pattern of the directional antenna.
+    Plots the 360-degree pickup patterns of multiple directional antennas.
     
     Parameters:
-    antenna_direction (array-like): The (x, y, z) direction vector the antenna is facing.
+    antenna_directions (list of array-like): A list of (x, y, z) direction vectors for the antennas.
     std_dev (float): The standard deviation of the Gaussian pattern.
     """
-    # Normalize the antenna direction vector
-    antenna_direction_normalized = antenna_direction / np.linalg.norm(antenna_direction)
-    
     # Define angles for the 360-degree plot
     angles = np.linspace(0, 2 * np.pi, 360)
     
-    # Calculate the pickup pattern for each angle
-    pickup_pattern = []
-    for angle in angles:
-        # Rotate the antenna direction vector by the current angle
-        rotation_matrix = np.array([
-            [np.cos(angle), -np.sin(angle), 0],
-            [np.sin(angle), np.cos(angle), 0],
-            [0, 0, 1]
-        ])
-        rotated_direction = np.dot(rotation_matrix, antenna_direction_normalized)
-        
-        # Calculate the pickup pattern for the rotated direction
-        cos_theta = np.dot(rotated_direction, antenna_direction_normalized)
-        pattern_value = gaussian_pickup_pattern(cos_theta, std_dev)
-        pickup_pattern.append(pattern_value)
-    
-    # Plot the pickup pattern
     plt.figure()
-    plt.polar(angles, pickup_pattern)
-    plt.title('Directional Antenna Pickup Pattern')
+    
+    for i, antenna_direction in enumerate(antenna_directions):
+        # Normalize the antenna direction vector
+        antenna_direction_normalized = np.array(antenna_direction) / np.linalg.norm(antenna_direction)
+        
+        # Calculate the pickup pattern for each angle
+        pickup_pattern = []
+        for angle in angles:
+            # Rotate the antenna direction vector by the current angle
+            rotation_matrix = np.array([
+                [np.cos(angle), -np.sin(angle)],
+                [np.sin(angle), np.cos(angle)]
+            ])
+            rotated_direction = np.dot(rotation_matrix, antenna_direction_normalized[:2])
+            
+            # Calculate the pickup pattern for the rotated direction
+            cos_theta = np.dot(rotated_direction, [1, 0])
+            pattern_value = gaussian_pickup_pattern(cos_theta, std_dev)
+            pickup_pattern.append(pattern_value)
+        
+        # Plot the pickup pattern
+        plt.polar(angles, pickup_pattern, label=f'Antenna {i+1}')
+    
+    plt.title('Directional Antenna Pickup Patterns')
+    plt.legend()
     plt.show()
 
 def plot_emitter_and_antenna(emitter_position, antenna_position):
@@ -104,4 +107,6 @@ def plot_emitter_and_antenna(emitter_position, antenna_position):
     ax.legend()
     plt.show()
 
-# plot_antenna_pattern([50, 13, 0], std_dev=0.5)
+#plot_antenna_patterns([[1, 0, 0], [0, 1, 0]], std_dev=0.5)
+
+#plot_antenna_patterns([[1, 0, 0], [np.sqrt(2)/2, np.sqrt(2)/2, 0]], std_dev=0.5)

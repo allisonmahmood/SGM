@@ -4,6 +4,8 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 
+from bearing_finder import bearing_from_power_db, bearing_from_power_natural
+
 def initialize_simulation(space_dim, resolution, emitters, antenna_positions, antenna_directions, frequency_value):
     """
     Initializes the simulation by setting up the 3D space, computing RF field strength, and computing antenna signal strength.
@@ -70,14 +72,15 @@ def plot_emitter_and_antennas(emitter_position, antenna_positions, antenna_direc
     ax.legend()
     plt.show()
 
-def create_antenna_pair(base_position, distance, direction):
+def create_antenna_pair(base_position, distance, direction, angle=np.pi/4):
     """
-    Creates a pair of antennas a set distance apart facing a specified direction with 45 degrees between them.
+    Creates a pair of antennas a set distance apart facing a specified direction with a specified angle between them.
     
     Parameters:
     base_position (array-like): The (x, y, z) coordinates of the base position.
     distance (float): The distance between the two antennas.
     direction (array-like): The (x, y, z) direction vector the antennas are facing.
+    angle (float): The angle between the antennas in radians. Default is 45 degrees (pi/4).
     
     Returns:
     antenna_positions (list): List of (x, y, z) coordinates of the antennas.
@@ -95,8 +98,8 @@ def create_antenna_pair(base_position, distance, direction):
     ]
     
     rotation_matrix = np.array([
-        [np.cos(np.pi / 4), -np.sin(np.pi / 4), 0],
-        [np.sin(np.pi / 4), np.cos(np.pi / 4), 0],
+        [np.cos(angle/2), -np.sin(angle/2), 0],
+        [np.sin(angle/2), np.cos(angle/2), 0],
         [0, 0, 1]
     ])
     
@@ -106,6 +109,25 @@ def create_antenna_pair(base_position, distance, direction):
     ]
     
     return antenna_positions, antenna_directions
+
+def plot_bearing_vs_angle(antenna1_strength, antenna2_strength, fixed_angle=np.pi/4):
+    """
+    Plots the bearing values as the angle changes between 0 and pi.
+    
+    Parameters:
+    antenna1_strength (float): The signal strength of the first antenna.
+    antenna2_strength (float): The signal strength of the second antenna.
+    fixed_angle (float): The fixed angle between the antennas.
+    """
+    angles = np.linspace(0, 2*np.pi, 100)
+    bearings = [bearing_from_power_db(antenna1_strength, antenna2_strength, fixed_angle, angle) for angle in angles]
+    
+    plt.figure()
+    plt.plot(angles, bearings)
+    plt.xlabel('Angle (radians)')
+    plt.ylabel('Bearing')
+    plt.title('Bearing vs Angle')
+    plt.show()
 
 def main(emitter_position=np.array([200, 450, 250]), antenna_positions=None, antenna_directions=None):
     # Define default values if not provided
@@ -124,6 +146,19 @@ def main(emitter_position=np.array([200, 450, 250]), antenna_positions=None, ant
     # Initialize simulation
     X, Y, Z, field_strength, antenna_strengths = initialize_simulation(space_dim, resolution, emitters, antenna_positions, antenna_directions, frequency_value)
 
+    # Calc bearing back
+
+    antenna1_strength = antenna_strengths[0]
+    antenna2_strength = antenna_strengths[1]
+
+    print("db based: ")
+    print(bearing_from_power_db(antenna1_strength, antenna2_strength, np.pi/4, 0.9))
+    print("natural based: ")
+    print(bearing_from_power_natural(antenna1_strength, antenna2_strength, np.pi/4, 0.9))
+
+    # Plot bearing vs angle
+    plot_bearing_vs_angle(antenna1_strength, antenna2_strength)
+
     # Visualize all
     visualize_all(space_dim, emitters, antenna_positions, field_strength, X, Y, Z)
 
@@ -131,4 +166,8 @@ def main(emitter_position=np.array([200, 450, 250]), antenna_positions=None, ant
     plot_emitter_and_antennas(emitter_position, antenna_positions, antenna_directions, antenna_strengths, space_dim)
 
 
-main(emitter_position=[100,250,80])
+#main(emitter_position=[100,250,80])
+
+#main()
+
+#psi0_actual = 0.9
