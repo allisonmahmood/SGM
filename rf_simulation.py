@@ -80,6 +80,10 @@ def compute_antenna_signal_strength(emitters, antenna_position, frequency_value)
 
 def visualize_all(space_dim, emitters, antenna_positions, field_strength, X, Y, Z):
     print("Running visualize_all")
+    # Ensure the directory exists
+    output_dir = '/Users/allisonmahmood/Documents/GitHub/SGM/tests2'
+    os.makedirs(output_dir, exist_ok=True)
+    
     # Visualize everything together in a single plot
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')

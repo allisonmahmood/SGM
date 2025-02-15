@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def gaussian_pickup_pattern(cos_theta, std_dev=0.5):
+    print("Running gaussian_pickup_pattern")
     """
     Calculates the Gaussian pickup pattern.
     
@@ -15,6 +16,7 @@ def gaussian_pickup_pattern(cos_theta, std_dev=0.5):
     return np.exp(-(1 - cos_theta) / (2 * std_dev**2))
 
 def directional_antenna(field_amplitude, emitter_position, antenna_position, antenna_direction, std_dev=0.5):
+    print("Running directional_antenna")
     """
     Computes the signal strength received by a directional antenna with a Gaussian pickup pattern.
     
@@ -47,6 +49,7 @@ def directional_antenna(field_amplitude, emitter_position, antenna_position, ant
     return received_signal
 
 def plot_antenna_pattern(antenna_direction, std_dev=0.5):
+    print("Running plot_antenna_pattern")
     """
     Plots the 360-degree pickup pattern of the directional antenna.
     
@@ -82,4 +85,4 @@ def plot_antenna_pattern(antenna_direction, std_dev=0.5):
     plt.title('Directional Antenna Pickup Pattern')
     plt.show()
 
-plot_antenna_pattern([50, 13, 0], std_dev=0.8)
+# plot_antenna_pattern([50, 13, 0], std_dev=0.5)
