@@ -8,7 +8,7 @@ output_dir = '/Users/allisonmahmood/Documents/GitHub/SGM/tests2'
 os.makedirs(output_dir, exist_ok=True)
 
 def setup_3d_space(space_dim, resolution):
-    print("Running setup_3d_space")
+    # print("Running setup_3d_space")
     # Define the 3D space using a grid
     x = np.linspace(0, space_dim, resolution)  # resolution points along x-axis
     y = np.linspace(0, space_dim, resolution)  # resolution points along y-axis
@@ -17,7 +17,7 @@ def setup_3d_space(space_dim, resolution):
     return X, Y, Z
 
 def compute_rf_field_strength(emitters, X, Y, Z):
-    print("Running compute_rf_field_strength")
+    # print("Running compute_rf_field_strength")
     """
     Computes the RF field strength at each point in the 3D space.
     
@@ -35,7 +35,7 @@ def compute_rf_field_strength(emitters, X, Y, Z):
     return field_strength
 
 def add_antenna(ax, position, label):
-    print("Running add_antenna")
+    # print("Running add_antenna")
     """
     Adds an antenna at the specified position in the 3D space.
     
@@ -44,10 +44,10 @@ def add_antenna(ax, position, label):
     label (str): The label for the antenna.
     """
     ax.scatter(position[0], position[1], position[2], color='b', s=100, label=label)
-    print("Antenna added")
+    # print("Antenna added")
 
 def compute_antenna_signal_strength(emitters, antenna_position, frequency_value):
-    print("Running compute_antenna_signal_strength")
+    # print("Running compute_antenna_signal_strength")
     """
     Computes the signal strength received by the antenna.
     
@@ -79,7 +79,7 @@ def compute_antenna_signal_strength(emitters, antenna_position, frequency_value)
     return signal_strength_db
 
 def visualize_all(space_dim, emitters, antenna_positions, field_strength, X, Y, Z):
-    print("Running visualize_all")
+    # print("Running visualize_all")
     # Ensure the directory exists
     output_dir = '/Users/allisonmahmood/Documents/GitHub/SGM/tests2'
     os.makedirs(output_dir, exist_ok=True)
@@ -98,9 +98,9 @@ def visualize_all(space_dim, emitters, antenna_positions, field_strength, X, Y, 
     for i, antenna_position in enumerate(antenna_positions):
         add_antenna(ax, antenna_position, f'Antenna {i+1}')
     sc = ax.scatter(X, Y, Z, c=np.log10(field_strength), cmap='viridis', marker='o', vmin=0, vmax=np.log10(max(emitter["power"] for emitter in emitters)))
-    print("Visualization setup complete")
+    # print("Visualization setup complete")
     plt.colorbar(sc, ax=ax, label='Log Field Strength (dB)')
-    print("Colorbar added")
+    # print("Colorbar added")
     plt.savefig(os.path.join(output_dir, '3d_space_visualization.png'))
-    print("Visualization saved")
+    # print("Visualization saved")
     plt.close()

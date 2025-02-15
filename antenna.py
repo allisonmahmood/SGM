@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def gaussian_pickup_pattern(cos_theta, std_dev=0.5):
-    print("Running gaussian_pickup_pattern")
+    # print("Running gaussian_pickup_pattern")
     """
     Calculates the Gaussian pickup pattern.
     
@@ -16,7 +16,7 @@ def gaussian_pickup_pattern(cos_theta, std_dev=0.5):
     return np.exp(-(1 - cos_theta) / (2 * std_dev**2))
 
 def directional_antenna(field_amplitude, emitter_position, antenna_position, antenna_direction, std_dev=0.5):
-    print("Running directional_antenna")
+    # print("Running directional_antenna")
     """
     Computes the signal strength received by a directional antenna with a Gaussian pickup pattern.
     
@@ -28,6 +28,7 @@ def directional_antenna(field_amplitude, emitter_position, antenna_position, ant
     std_dev (float): The standard deviation of the Gaussian pattern.
     
     Returns:
+    original_field_strength (float): The original field strength at the antenna position.
     received_signal (float): The signal strength received by the antenna.
     """
     # Calculate the vector from the antenna to the emitter
@@ -46,10 +47,10 @@ def directional_antenna(field_amplitude, emitter_position, antenna_position, ant
     # Calculate the received signal strength
     received_signal = field_amplitude * pickup_pattern
     
-    return received_signal
+    return field_amplitude, received_signal
 
 def plot_antenna_pattern(antenna_direction, std_dev=0.5):
-    print("Running plot_antenna_pattern")
+    # print("Running plot_antenna_pattern")
     """
     Plots the 360-degree pickup pattern of the directional antenna.
     
@@ -83,6 +84,24 @@ def plot_antenna_pattern(antenna_direction, std_dev=0.5):
     plt.figure()
     plt.polar(angles, pickup_pattern)
     plt.title('Directional Antenna Pickup Pattern')
+    plt.show()
+
+def plot_emitter_and_antenna(emitter_position, antenna_position):
+    """
+    Plots the emitter and antenna in 3D space.
+    
+    Parameters:
+    emitter_position (array-like): The (x, y, z) coordinates of the emitter.
+    antenna_position (array-like): The (x, y, z) coordinates of the antenna.
+    """
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.scatter(emitter_position[0], emitter_position[1], emitter_position[2], color='r', s=100, label='Emitter')
+    ax.scatter(antenna_position[0], antenna_position[1], antenna_position[2], color='b', s=100, label='Antenna')
+    ax.set_xlabel('X axis (m)')
+    ax.set_ylabel('Y axis (m)')
+    ax.set_zlabel('Z axis (m)')
+    ax.legend()
     plt.show()
 
 # plot_antenna_pattern([50, 13, 0], std_dev=0.5)
