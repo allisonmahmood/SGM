@@ -3,6 +3,8 @@ import numpy as np
 
 import visualiseTarget as vt  
 
+import localize_RANSAC as ransac_loc
+
 def generate_antenna_data(pairs=10):
     target_data_list = vt.generate_and_get_target_data(num_pairs=pairs, space_dim=500, resolution=100, emitter_position=np.array([360, 120, 250]), emitter_power=20.0, phi=np.pi/4, antena_std_dev=0.3)
 

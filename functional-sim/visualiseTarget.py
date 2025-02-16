@@ -13,6 +13,9 @@ from targetVector import track
 import random
 
 
+import localize_RANSAC as ransac_loc
+
+
 # Fixed Location
 emitter_position = np.array([360, 290, 250])
 
@@ -90,12 +93,12 @@ def plot_target_vectors(target_data_list, emitter_position):
         ax.plot([origin[0], line_end[0]], [origin[1], line_end[1]], [origin[2], line_end[2]], color='b')
         
         # Add arrow to indicate direction
-        ax.quiver(origin[0], origin[1], origin[2], direction[0], direction[1], direction[2], length=line_length, color='b', arrow_length_ratio=0.1, pivot='tail')
+        ax.quiver(line_end[0], line_end[1], line_end[2], -direction[0], -direction[1], -direction[2], length=line_length, color='b', arrow_length_ratio=0.1, pivot='tail')
         
-        # Add arrowhead with different color
+        # Add green line segment
         arrowhead_length = 0.1 * line_length
         arrowhead_end = origin + direction * (line_length + arrowhead_length)
-        ax.quiver(line_end[0], line_end[1], line_end[2], direction[0], direction[1], direction[2], length=arrowhead_length, color='g', arrow_length_ratio=1, pivot='tail')
+        ax.plot([line_end[0], arrowhead_end[0]], [line_end[1], arrowhead_end[1]], [line_end[2], arrowhead_end[2]], color='g')
     
     ax.set_xlabel('X axis (m)')
     ax.set_ylabel('Y axis (m)')
@@ -116,6 +119,11 @@ def generate_and_get_target_data(num_pairs, space_dim, resolution, emitter_posit
     target_data_list = get_target_data(space_dim, resolution, emitter_position, emitter_power, antenna_pairs, phi, antena_std_dev)
     
     return target_data_list
+
+def target_to_origin_direction(target_data_list):
+    origins = np.array([target["origin"][:2] for target in target_data_list])
+    directions = np.array([target["direction"][:2] for target in target_data_list])
+    return origins, directions
 
 # Example usage
 target_data_list = generate_and_get_target_data(10, space_dim, resolution, emitter_position, emitter_power, phi, antena_std_dev)
