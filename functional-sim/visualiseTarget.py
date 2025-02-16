@@ -51,8 +51,8 @@ phi = np.pi/4
 def generate_antenna_pairs(num_pairs=4, pos_limits=(0, 500), dir_limits=(-1, 1), dis=0.1):
     antenna_pairs = []
     for _ in range(num_pairs):
-        pos = [random.uniform(*pos_limits) for _ in range(3)]
-        dir = [random.uniform(*dir_limits) for _ in range(3)]
+        pos = [random.uniform(*pos_limits) for _ in range(2)] + [250]
+        dir = [random.uniform(*dir_limits) for _ in range(2)] + [0]
         antenna_pairs.append({
             "pos": pos,
             "dir": dir,
@@ -108,12 +108,17 @@ def plot_target_vectors(target_data_list, emitter_position):
     plt.show()
 
 
+def generate_and_get_target_data(num_pairs, space_dim, resolution, emitter_position, emitter_power, phi, antena_std_dev):
+    # Generate antenna pairs
+    antenna_pairs = generate_antenna_pairs(num_pairs=num_pairs)
+    
+    # Get target data
+    target_data_list = get_target_data(space_dim, resolution, emitter_position, emitter_power, antenna_pairs, phi, antena_std_dev)
+    
+    return target_data_list
 
-# Generate antenna pairs
-antenna_pairs = generate_antenna_pairs(num_pairs=10)
-
-# Get target data
-target_data_list = get_target_data(space_dim, resolution, emitter_position, emitter_power, antenna_pairs, phi, antena_std_dev)
+# Example usage
+target_data_list = generate_and_get_target_data(10, space_dim, resolution, emitter_position, emitter_power, phi, antena_std_dev)
 
 # Plot the target vectors and emitter
-plot_target_vectors(target_data_list, emitter_position)
+#plot_target_vectors(target_data_list, emitter_position)
